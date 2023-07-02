@@ -1,0 +1,28 @@
+version: '3'
+services:
+  voicevox:
+    hostname: voicevox
+    platform: 'linux/amd64'
+    image: voicevox/voicevox_engine:latest
+    env_file:
+      - .env
+    tty: true
+    ports:
+      - 50021:50021
+  api:
+    build: .
+    platform: linux/amd64
+    env_file:
+      - .env
+    tty: true    
+    ports:
+      - "8080:8080"
+    environment:
+      - PULSE_SERVER=docker.for.mac.localhost
+    volumes:
+      - ~/.config/pulse:/root/.config/pulse
+      - ./api/src:/api
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 104857600

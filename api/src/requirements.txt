@@ -1,0 +1,18 @@
+# flask
+flask
+flask_cors
+flask_restful
+requests
+
+# TextToSpeech
+
+# SpeechToText
+google-cloud-speech
+
+# Search
+google-api-python-client
+google-search-results
+
+# OpenAI langchain
+openai
+langchain
