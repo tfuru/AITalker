@@ -1,4 +1,5 @@
 ._*
 
 .env
+/api/src/ai/cache/.langchain.db
 /api/src/google_application_credentials.json
