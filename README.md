@@ -29,8 +29,36 @@ pacmd list-sinks | grep -e 'name:' -e 'index:' -e device.string -e 'name:'
 pactl set-default-sink 1__2
 ```
 
-# Docker
+# .env 環境変数ファイル
+```
+cp .env.sample .env
+vi .env
+```
 
+```
+# GOOGLE
+GOOGLE_CSE_ID="XXXXX"
+GOOGLE_API_KEY="xxxxxxxx"
+GOOGLE_APPLICATION_CREDENTIALS=/api/google_application_credentials.json
+
+# OPENAI
+OPENAI_API_KEY="sk-XXXXXXX"
+
+# VOICEVOX
+VOICEVOX_ENDPOINT="http://voicevox:50021"
+VOICEVOX_SPEAKER_ID=8
+```
+
+# Docker 環境
+
+`docker-compose.yml` に 記載されているサービスについて説明します。
+voicevox
+- Voicevox Core 音声合成エンジン
+api
+- APIサーバー
+
+
+# Docker 起動手順
 ```
 docker build .
 docker compose up -d
