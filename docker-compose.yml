@@ -19,6 +19,8 @@ services:
       - "8080:8080"
     environment:
       - PULSE_SERVER=docker.for.mac.localhost
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ~/.config/pulse:/root/.config/pulse
       - ./api/src:/api
