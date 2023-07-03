@@ -34,7 +34,7 @@ class GoogleSpeechToText(ISpeechToText):
 
     # 録音して音声認識する duration は録音時間
     def rec_to_text(self, duration):        
-        logging.debug(f'rec_to_text')
+        logging.info(f'rec_to_text')
         # 録音する
         arecord_cmd=f'arecord -c {self.audio_channel} -t {self.encode} -r {self.sample_rate} -f S16_LE -d {duration} {self.path}'
         logging.debug(f'arecord_cmd: {arecord_cmd}')
@@ -58,5 +58,8 @@ class GoogleSpeechToText(ISpeechToText):
         for r in response.results:
             # logging.debug('Transcript: {}'.format(r.alternatives[0].transcript))
             result += f'{r.alternatives[0].transcript} '
-        logging.info(f'rec_to_text result {result.strip()}')
-        return result.strip()
+        if result == '':
+            return ''
+        result = result.strip()
+        logging.info(f'rec_to_text result {result}')
+        return result

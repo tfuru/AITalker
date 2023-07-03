@@ -59,7 +59,7 @@ class TextToSpeech():
 
     def text_to_speech(self, text, speaker=8):
         # text を !,,, で区切って配列に入れる
-        words = re.split('[\n!,。！]', text)
+        words = re.split('[\n!,。、！]', text)
         logging.info(f'words: {words}')
         for word in words:
             if word == '':
