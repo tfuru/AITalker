@@ -1,6 +1,8 @@
-import os
+import re
 import logging
+from typing import Any
 
+import langchain
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferWindowMemory
@@ -11,16 +13,38 @@ from langchain.prompts import (
 )
 from langchain.agents import Tool, initialize_agent
 from langchain.utilities import GoogleSearchAPIWrapper
+from langchain.cache import SQLiteCache
+from langchain.callbacks.manager import CallbackManager, BaseCallbackHandler
 
 # 参考
 # https://note.com/strictlyes/n/n6de1a36a6e7e
+
+# langchain キャッシュの無効化
+# langchain.llm_cache = None
+
+# SQLiteCache によるキャッシュの有効化
+langchain.llm_cache = SQLiteCache(database_path="ai/cache/.langchain.db")
+
+class StreamingCallbackHandler(BaseCallbackHandler):
+    def __init__(self, callback):
+        self.callback = callback
+    
+    def on_llm_new_token(self, token: str, **kwargs: Any) -> Any:
+        """Run on new LLM token. Only available when streaming is enabled."""
+        if self.callback is not None:
+            self.callback(token) 
 
 class AI:
     def __init__(self):
         # 出力する単語のランダム性（0から2の範囲） 0であれば毎回返答内容固定
         temperature=0.0
         # gpt-3.5-turbo-16k
-        self.llm=ChatOpenAI(temperature=temperature, model_name='gpt-3.5-turbo')
+        self.llm=ChatOpenAI(
+            streaming=True,
+            callback_manager=CallbackManager([StreamingCallbackHandler(self.callback_streaming)]),
+            temperature=temperature,
+            model_name='gpt-3.5-turbo'
+            )
         
         # プロンプト作成
         system_template="""あなたは音声で対話するAIです。
@@ -43,16 +67,33 @@ class AI:
             input_key="input",
             return_messages=True
             )
+    
+    def callback_streaming(self, token):
+        if self.answer_callback is None:
+            return
         
-    def request(self, input):
+        # logging.info(f"streaming token: {token}")
+        self.answer += f'{token}'
+        result=re.search(r'[\n!,。、！]', self.answer)
+        if result is None:
+            return
+        logging.info(f"streaming answer: {self.answer}")
+        # 終端記号が出現したらコールバックを呼び出す
+        self.answer_callback(self.answer)
+        self.answer=''
+    
+    def request(self, input, answer_callback=None):
+        self.answer=''
+        self.answer_callback = answer_callback
+
         # verbose プロンプト途中結果の表示有無
         chain=LLMChain(llm=self.llm, 
                           prompt=self.prompt,
                           memory=self.memory,
                           verbose=False)
-        result = chain.run(input=input)
-        answer=result.strip()
-        return answer
+        result=chain.run(input=input)
+        self.answer=result.strip()
+        return self.answer
     
     # TODO Agent と Toursを使った会話 だが、現状は想定通りに動作しない
     def request_agent(self, text):
