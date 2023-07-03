@@ -8,4 +8,4 @@ RUN pip install --upgrade pip
 RUN pip install -r /tmp/requirements.txt
 
 WORKDIR /api
-# CMD ["python", "app.py"]
+CMD ["python", "app.py"]
