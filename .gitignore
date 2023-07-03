@@ -1,4 +1,5 @@
 ._*
+__pycache__
 
 .env
 /api/src/ai/cache/.langchain.db
