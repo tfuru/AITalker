@@ -1,6 +1,6 @@
 ._*
 __pycache__
 
-.env
-/api/src/ai/cache/.langchain.db
-/api/src/google_application_credentials.json
+Docker/.env
+/Docker/api/src/ai/cache/.langchain.db
+/Docker/api/src/google_application_credentials.json
