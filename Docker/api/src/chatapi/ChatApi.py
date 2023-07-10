@@ -12,6 +12,8 @@ from flask_restful import Resource
 from speechtotext.GoogleSpeechToText import GoogleSpeechToText as SpeechToText
 from texttospeech.TextToSpeech import TextToSpeech
 from ai.AI import AI
+from websocketsclient.WebSocketsClient import WebSocketsClient
+from sentiment.Sentiment import Sentiment
 
 # 環境変数の取得
 # GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
@@ -25,10 +27,12 @@ REC_TO_TEXT_DURATION=5
 speechToText = SpeechToText()
 textToSpeech = TextToSpeech(endpoint=VOICEVOX_ENDPOINT)
 ai = AI()
+webSocketsClient = WebSocketsClient()
+sentiment = Sentiment()
 
 class ChatApi(Resource):
     # OpenAIに問い合わせて回答をもらう
-    def answer(self, text):
+    def answer_to_speech(self, text):
         answer=ai.request(text)
         textToSpeech.text_to_speech(answer, VOICEVOX_SPEAKER_ID)
         return {'status': 'OK', 'text': text, 'answer': answer}
@@ -39,16 +43,18 @@ class ChatApi(Resource):
         if 'text' not in query:
             return {'status': 'NG', 'text':'text is not found'}        
         text = query['text']
-        return self.answer(text)
+        return self.answer_to_speech(text)
     
     def post(self):
         logging.debug(f'post {request}')
         text = request.json["text"]
-        return self.answer(text)
+        return self.answer_to_speech(text)
 
     def answer_callback(self, answer):
-        # logging.info(f'answer_callback {answer}')
+        logging.info(f'answer_callback {answer}')
         textToSpeech.text_to_speech(answer, VOICEVOX_SPEAKER_ID)
+        # answer を websocket で送信
+        webSocketsClient.send_text(answer)        
         time.sleep(0.5)
 
     def start(self):
@@ -62,11 +68,19 @@ class ChatApi(Resource):
                 continue
             # AIに問い合わせ回答をもらう
             answer=ai.request(text, self.answer_callback)
-            # 回答を音声合成
-            # self.answer_callback(answer)
+            logging.info(f'answer {answer}')
+            if answer == '':
+                continue
+            # answer の感情に合わせて websocketsclient にエモーションを送信
+            def callback(req):
+                if 'emotion' in req:
+                    webSocketsClient.send_emotion(req['emotion'])
+            sentiment.request(answer, callback)
             
         logging.info(f'run stop')
         textToSpeech.text_to_speech('対話を終了しました', VOICEVOX_SPEAKER_ID)
+        webSocketsClient.close()
+        sentiment.stop()
 
     def stop(self):
         self.isActive = False
