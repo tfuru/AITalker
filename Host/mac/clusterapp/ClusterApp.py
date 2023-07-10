@@ -4,6 +4,9 @@ import pyperclip
 
 import logging
 
+# pyautogui の ディレイを0にする
+pyautogui.PAUSE = 0
+
 # Clusterを操作するクラス
 class ClusterApp:
     def __init__(self):

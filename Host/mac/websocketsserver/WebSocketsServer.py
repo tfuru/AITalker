@@ -23,5 +23,10 @@ class WebSocketsServer:
                 self.app.send_text(inp)
 
     async def run(self):
-        async with serve(self.onmessage, "localhost", 8766):
+        async with serve(self.onmessage, 
+                         "localhost", 8766, 
+                         ping_interval=None,
+                         ping_timeout=None,
+                         open_timeout=None, 
+                         close_timeout=None):
             await asyncio.Future()
