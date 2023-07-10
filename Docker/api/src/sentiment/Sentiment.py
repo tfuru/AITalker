@@ -55,7 +55,7 @@ class Sentiment:
             if score['positive'] > 0.4:
                 emotion = 'ワイワイ'
             if score['neutral'] > 0.4:
-                pass
+                emotion = 'わらう'
             if score['negative'] > 0.4:
                 emotion = 'びっくり'
             logging.info(f"emotion: {emotion}")            
