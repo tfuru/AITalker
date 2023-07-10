@@ -16,3 +16,11 @@ google-search-results
 # OpenAI langchain
 openai
 langchain
+
+# Websockets
+websockets
+
+# transformers
+torch
+transformers
+# transformers['ja']
