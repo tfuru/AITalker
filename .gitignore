@@ -4,3 +4,5 @@ __pycache__
 Docker/.env
 /Docker/api/src/ai/cache/.langchain.db
 /Docker/api/src/google_application_credentials.json
+
+Host/mac/.env
