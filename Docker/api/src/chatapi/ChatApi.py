@@ -79,7 +79,7 @@ class ChatApi(Resource):
             
         logging.info(f'run stop')
         textToSpeech.text_to_speech('対話を終了しました', VOICEVOX_SPEAKER_ID)
-        webSocketsClient.close()
+        webSocketsClient.stop()
         sentiment.stop()
 
     def stop(self):
