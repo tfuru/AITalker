@@ -51,6 +51,9 @@ class ChatApi(Resource):
         return self.answer_to_speech(text)
 
     def answer_callback(self, answer):
+        answer = answer.strip()
+        if answer == '':
+            return
         logging.info(f'answer_callback {answer}')
         textToSpeech.text_to_speech(answer, VOICEVOX_SPEAKER_ID)
         # answer を websocket で送信
