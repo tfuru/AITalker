@@ -47,11 +47,12 @@ class AI:
             )
         
         # プロンプト作成
-        system_template="""あなたは音声で対話するAIです。
+        system_template="""あなたは音声で対話するAIチャットボットです。
         小学生にも分かるように簡単に短く会話するようにしてください。
         語尾に必ず にゃん をつけてください。
 
-        以下の過去の会話履歴を参考にして会話をしてください。
+        過去の会話履歴を参考にして会話をしてください。
+        [会話履歴]
         {chat_history}
         """
         human_template="{input}"
@@ -74,7 +75,7 @@ class AI:
         
         # logging.info(f"streaming token: {token}")
         self.answer += f'{token}'
-        result=re.search(r'[\n!,。、！]', self.answer)
+        result=re.search(r'[\n!,。、！？]', self.answer)
         if result is None:
             return
         logging.info(f"streaming answer: {self.answer}")
@@ -95,7 +96,7 @@ class AI:
         self.answer=result.strip()
         return self.answer
     
-    # TODO Agent と Toursを使った会話 だが、現状は想定通りに動作しない
+    # TODO Agent と tools を使った会話 だが、現状は想定通りに動作しない
     def request_agent(self, text):
         search = GoogleSearchAPIWrapper()
         tools = [
