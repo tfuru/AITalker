@@ -22,11 +22,11 @@ pulseaudio --kill
 # http://kamae-norihiro.blogspot.com/2015/09/pulseaudio.html
 # デフォルトの入力ソース確認
 pacmd list-sources | grep -e 'index:' -e device.string -e 'name:'
-pactl set-default-source Channel_1
+pactl set-default-source Channel_1 # MacBook Airのマイク
 
 # デフォルトの出力ソース
 pacmd list-sinks | grep -e 'name:' -e 'index:' -e device.string -e 'name:'
-pactl set-default-sink 1__2
+pactl set-default-sink 1__2 # MacBook Airのスピーカー
 ```
 
 # .env 環境変数ファイル
