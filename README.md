@@ -60,9 +60,18 @@ api
 
 # Docker 起動手順
 ```
-docker build .
+docker compose build
 docker compose up -d
 
 docker compose exec api /bin/bash
 ```
 
+# HOST側の設定
+ホスト側のマウスとキーボードをコンテナ内から操作するためのスクリプト
+
+```
+# 必要ライブラリをインストール
+pip install --upgrade pip
+pip install -r requirements.txt
+
+```
