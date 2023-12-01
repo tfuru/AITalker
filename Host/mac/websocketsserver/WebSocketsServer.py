@@ -8,6 +8,7 @@ import logging
 # history0
 # 座る
 # こんにちは
+# copy
 
 class WebSocketsServer:
     def __init__(self, app):
