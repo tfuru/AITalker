@@ -4,7 +4,7 @@ from websockets.server import serve
 import logging
 
 # コンソールからの接続テスト
-# websocat ws://localhost:8765
+# websocat ws://localhost:8766
 # history0
 # 座る
 # こんにちは
@@ -19,6 +19,8 @@ class WebSocketsServer:
             logging.debug(f'onmessage {inp}')
             if inp in self.app.EMOTIONS:
                 self.app.send_emotion(inp)
+            elif inp == 'copy':
+                self.app.copy_chat_text()
             else:
                 self.app.send_text(inp)
 

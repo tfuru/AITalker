@@ -25,6 +25,10 @@ from langchain.callbacks.manager import CallbackManager, BaseCallbackHandler
 # SQLiteCache によるキャッシュの有効化
 langchain.llm_cache = SQLiteCache(database_path="ai/cache/.langchain.db")
 
+# モデル名
+# MODEL_NAME='gpt-3.5-turbo'
+MODEL_NAME='gpt-3.5-turbo-16k'
+
 class StreamingCallbackHandler(BaseCallbackHandler):
     def __init__(self, callback):
         self.callback = callback
@@ -43,8 +47,7 @@ class AI:
             streaming=True,
             callback_manager=CallbackManager([StreamingCallbackHandler(self.callback_streaming)]),
             temperature=temperature,
-            model_name='gpt-3.5-turbo'
-            )
+            model_name=MODEL_NAME)
         
         # プロンプト作成
         system_template="""あなたは音声で対話するAIチャットボットです。

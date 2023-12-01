@@ -3,6 +3,7 @@ import pyautogui
 import pyperclip
 
 import logging
+import time
 
 # pyautogui の ディレイを0にする
 pyautogui.PAUSE = 0
@@ -31,6 +32,11 @@ class ClusterApp:
             '応援':[680,613],
             'ワイワイ':[750,613],            
         }
+        # チャットテキストのコピーボタン座標
+        self.CHAT_TEXT_COPY_BUTTON = [
+            [233, 509],
+            [274, 509],
+        ]
 
     def init_window(self, name):
         ws = pwc.getWindowsWithTitle(name)
@@ -63,3 +69,13 @@ class ClusterApp:
         emotion = self.EMOTIONS[name]
         if emotion:
             pyautogui.click(emotion[0], emotion[1])
+    
+    # チャットテキストをコピーする
+    def copy_chat_text(self):
+        logging.info(f'copy_chat_text')
+        if self.ws is None:
+            return
+        self.ws.activate()
+        pyautogui.click(self.CHAT_TEXT_COPY_BUTTON[0][0], self.CHAT_TEXT_COPY_BUTTON[0][1])
+        time.sleep(0.3)
+        pyautogui.click(self.CHAT_TEXT_COPY_BUTTON[1][0], self.CHAT_TEXT_COPY_BUTTON[1][1])
